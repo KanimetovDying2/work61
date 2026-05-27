@@ -13,3 +13,14 @@ export interface CountryShort {
   name: string;
   alpha3Code: string;
 }
+
+export interface CountryFull {
+  name: string;
+  capital: string;
+  region: string;
+  alpha3Code: string;
+  population: number;
+  independent: boolean;
+  borders: string[];
+  flag: string;
+}

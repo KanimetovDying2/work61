@@ -10,6 +10,7 @@ import CountryList from "./components/CountryList";
 import CountryDetails from "./components/CountryDetails";
 
 const App = () => {
+  const [isCountriesLoading, setIsCountriesLoading] = useState<boolean>(false);
   const [isDetailsLoading, setIsDetailsLoading] = useState<boolean>(false);
   const [detailsError, setDetailsError] = useState<string | null>(null);
 
@@ -27,10 +28,13 @@ const App = () => {
   useEffect(() => {
     const getAllCountries = async () => {
       try {
+        setIsCountriesLoading(true);
         const { data } = await axiosInstance.get(ENDPOINTS.allCountries);
         setCountries(data);
       } catch (error) {
         console.error("Error. Cannot load Countries", error);
+      } finally {
+        setIsCountriesLoading(false);
       }
     };
     getAllCountries();
@@ -62,14 +66,25 @@ const App = () => {
 
   return (
     <div className="app-layout">
-      <CountryList
-        countries={countries}
-        onSelectCountry={handleSelectCountry}
-      />
-
+      <div className="sidebar-wrapper">
+        {isCountriesLoading ? (
+          <div className="loader-container">
+            <div className="spinner"></div>
+            <p>Loading list...</p>
+          </div>
+        ) : (
+          <CountryList
+            countries={countries}
+            onSelectCountry={handleSelectCountry}
+          />
+        )}
+      </div>
       <div className="details-container">
         {isDetailsLoading ? (
-          <div>Loading country details...</div>
+          <div className="loader-container">
+            <div className="spinner"></div>
+            <p>Loading country details...</p>
+          </div>
         ) : detailsError ? (
           <div className="error-message">{detailsError}</div>
         ) : selectedCountryDetails ? (

@@ -1,4 +1,5 @@
 import type { CountryShort } from "../../api";
+import styles from "./CountryList.module.css";
 
 type Props = {
   countries: CountryShort[];
@@ -7,16 +8,19 @@ type Props = {
 
 const CountryList = ({ countries, onSelectCountry }: Props) => {
   return (
-    <ul>
-      {countries.map((item) => (
-        <li
-          key={item.alpha3Code}
-          onClick={() => onSelectCountry(item.alpha3Code)}
-        >
-          {item.name}
-        </li>
-      ))}
-    </ul>
+    <div className={styles.sidebar}>
+      <ul className={styles.list}>
+        {countries.map((item) => (
+          <li
+            key={item.alpha3Code}
+            onClick={() => onSelectCountry(item.alpha3Code)}
+            className={styles.item}
+          >
+            {item.name}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

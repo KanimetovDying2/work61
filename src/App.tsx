@@ -61,11 +61,12 @@ const App = () => {
   }, [selectedCountryCode]);
 
   return (
-    <>
+    <div className="app-layout">
       <CountryList
         countries={countries}
         onSelectCountry={handleSelectCountry}
       />
+
       <div className="details-container">
         {isDetailsLoading ? (
           <div>Loading country details...</div>
@@ -82,7 +83,7 @@ const App = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

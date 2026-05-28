@@ -1,10 +1,16 @@
-import type { CountryFull } from "../../api";
+import type { CountryFull, CountryShort } from "../../api";
 
 type Props = {
   countryInfo: CountryFull;
+  allBorders: CountryShort[];
 };
 
-const CountryDetails = ({ countryInfo }: Props) => {
+const CountryDetails = ({ countryInfo, allBorders }: Props) => {
+  const borderNames = countryInfo.borders?.map((code) => {
+    const foundCountry = allBorders.find((c) => c.alpha3Code === code);
+    return foundCountry ? foundCountry.name : code;
+  });
+
   return (
     <div>
       <h2>{countryInfo.name}</h2>
@@ -13,7 +19,12 @@ const CountryDetails = ({ countryInfo }: Props) => {
       <p>Region: {countryInfo.region}</p>
       <p>Population: {countryInfo.population}</p>
       <p>Independent: {countryInfo.independent ? "Yes" : "No"}</p>
-      <p>Borders: {countryInfo.borders.join(`, `)}</p>
+      <p>
+        Borders with:{" "}
+        {borderNames && borderNames.length > 0
+          ? borderNames.join(`, `)
+          : "No borders"}
+      </p>
     </div>
   );
 };

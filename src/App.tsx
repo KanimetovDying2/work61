@@ -10,6 +10,9 @@ import CountryList from "./components/CountryList";
 import CountryDetails from "./components/CountryDetails";
 
 const App = () => {
+  const [isDetailsLoading, setIsDetailsLoading] = useState<boolean>(false);
+  const [detailsError, setDetailsError] = useState<string | null>(null);
+
   const [countries, setCountries] = useState<CountryShort[]>([]);
   const [selectedCountryCode, setSelectedCountryCode] = useState<string | null>(
     null,
@@ -35,14 +38,23 @@ const App = () => {
 
   useEffect(() => {
     if (selectedCountryCode === null) return;
+
     const getFullCountry = async () => {
       try {
+        setIsDetailsLoading(true);
+        setDetailsError(null);
+
         const { data } = await axiosInstance.get(
           ENDPOINTS.singleCountry(selectedCountryCode),
         );
         setSelectedCountryDetails(data);
       } catch (error) {
         console.error("Error. Cannot load this Country", error);
+        setDetailsError(
+          "Error. Failed to load country details. Please try again.",
+        );
+      } finally {
+        setIsDetailsLoading(false);
       }
     };
     getFullCountry();
@@ -54,9 +66,22 @@ const App = () => {
         countries={countries}
         onSelectCountry={handleSelectCountry}
       />
-      {selectedCountryDetails && (
-        <CountryDetails countryInfo={selectedCountryDetails} />
-      )}
+      <div className="details-container">
+        {isDetailsLoading ? (
+          <div>Loading country details...</div>
+        ) : detailsError ? (
+          <div className="error-message">{detailsError}</div>
+        ) : selectedCountryDetails ? (
+          <CountryDetails
+            countryInfo={selectedCountryDetails}
+            allBorders={countries}
+          />
+        ) : (
+          <div className="placeholder">
+            Please select a country from the list.
+          </div>
+        )}
+      </div>
     </>
   );
 };
